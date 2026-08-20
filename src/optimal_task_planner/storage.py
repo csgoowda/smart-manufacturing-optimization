@@ -35,7 +35,116 @@ BACKUP_KEEP = 20
 _BACKUP_NAME = re.compile(r"^\d{8}-\d{6}-\d{6}\.json$")
 
 
-def default_project(name: str = "My lab") -> Project:
+def default_project(name: str = "Smart Manufacturing Plant") -> Project:
+    """Sample manufacturing project for production optimization."""
+
+    equipment = [
+        {"name": "CNC Machine", "count": 2},
+        {"name": "Lathe Machine", "count": 2},
+        {"name": "Milling Machine", "count": 1},
+        {"name": "Assembly Station", "count": 2},
+        {"name": "Quality Inspection", "count": 1},
+    ]
+
+    # Create task IDs so dependencies can reference previous operations.
+    raw_material = str(uuid.uuid4())
+    shaft_turning = str(uuid.uuid4())
+    shaft_milling = str(uuid.uuid4())
+    gear_machining = str(uuid.uuid4())
+    gear_finishing = str(uuid.uuid4())
+    assembly = str(uuid.uuid4())
+    quality_shaft = str(uuid.uuid4())
+    quality_gear = str(uuid.uuid4())
+
+    tasks = [
+        {
+            "id": raw_material,
+            "name": "Raw Material Preparation",
+            "minutes": 120,
+            "work_hours_only": True,
+            "continue_next_day": False,
+            "resources": {"Milling Machine": 1},
+            "slots": {},
+        },
+        {
+            "id": shaft_turning,
+            "name": "Shaft Turning",
+            "minutes": 240,
+            "work_hours_only": True,
+            "continue_next_day": False,
+            "depends_on": [raw_material],
+            "resources": {"Lathe Machine": 1},
+            "slots": {},
+        },
+        {
+            "id": shaft_milling,
+            "name": "Shaft Milling",
+            "minutes": 180,
+            "work_hours_only": True,
+            "continue_next_day": False,
+            "depends_on": [shaft_turning],
+            "resources": {"Milling Machine": 1},
+            "slots": {},
+        },
+        {
+            "id": gear_machining,
+            "name": "Gear CNC Machining",
+            "minutes": 300,
+            "work_hours_only": True,
+            "continue_next_day": False,
+            "depends_on": [raw_material],
+            "resources": {"CNC Machine": 1},
+            "slots": {},
+        },
+        {
+            "id": gear_finishing,
+            "name": "Gear Finishing",
+            "minutes": 180,
+            "work_hours_only": True,
+            "continue_next_day": False,
+            "depends_on": [gear_machining],
+            "resources": {"CNC Machine": 1},
+            "slots": {},
+        },
+        {
+            "id": assembly,
+            "name": "Component Assembly",
+            "minutes": 240,
+            "work_hours_only": True,
+            "continue_next_day": False,
+            "depends_on": [shaft_milling, gear_finishing],
+            "resources": {"Assembly Station": 1},
+            "slots": {},
+        },
+        {
+            "id": quality_shaft,
+            "name": "Shaft Quality Inspection",
+            "minutes": 120,
+            "work_hours_only": True,
+            "continue_next_day": False,
+            "depends_on": [shaft_milling],
+            "resources": {"Quality Inspection": 1},
+            "slots": {},
+        },
+        {
+            "id": quality_gear,
+            "name": "Final Product Quality Inspection",
+            "minutes": 120,
+            "work_hours_only": True,
+            "continue_next_day": False,
+            "depends_on": [assembly],
+            "resources": {"Quality Inspection": 1},
+            "slots": {},
+        },
+    ]
+
+    return Project.model_validate(
+        {
+            "name": name,
+            "equipment": equipment,
+            "tasks": tasks,
+        }
+    )
     """A small sample project so first-time users see something working."""
     equipment = [
         {"name": "VSG", "count": 3},
