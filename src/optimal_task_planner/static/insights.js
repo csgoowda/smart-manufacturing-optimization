@@ -18,20 +18,44 @@ function computeInsights() {
       }
     });
   }));
-  const windowSlots = Math.max(1, lastEnd - horizon.now_slot);
-  const perUnit = units.map(u => ({
-    unit: u, busy: busy.get(u).size, util: busy.get(u).size / windowSlots,
-    perDay: perDay.get(u),
-  }));
+ const windowSlots = Math.max(1, lastEnd - horizon.now_slot);
+
+let availableWorkSlots = 0;
+for (let s = horizon.now_slot; s < lastEnd; s++) {
+  const d = Math.floor(s / SPD);
+  const slotOfDay = s % SPD;
+  if (isWork(d, slotOfDay)) {
+    availableWorkSlots += 1;
+  }
+}
+
+availableWorkSlots = Math.max(1, availableWorkSlots);
+
+const perUnit = units.map(u => ({
+  unit: u,
+  busy: busy.get(u).size,
+  util: busy.get(u).size / availableWorkSlots,
+  perDay: perDay.get(u),
+}));
   const typeAgg = project.equipment.map(eq => {
-    const us = unitsOf(eq);
-    const b = us.reduce((a, u) => a + (busy.get(u) ? busy.get(u).size : 0), 0);
-    return { type: eq.name, count: us.length, util: b / (windowSlots * Math.max(1, us.length)) };
-  }).filter(x => x.count > 0);
+  const us = unitsOf(eq);
+  const b = us.reduce(
+    (a, u) => a + (busy.get(u) ? busy.get(u).size : 0),
+    0
+  );
+
+  return {
+    type: eq.name,
+    count: us.length,
+    util: b / (availableWorkSlots * Math.max(1, us.length)),
+  };
+}).filter(x => x.count > 0);
   const rows = scheduleRows();
   const late = rows.filter(r => r.deadline && !r.met);
   const overall = units.length
-    ? perUnit.reduce((a, p) => a + p.busy, 0) / (units.length * windowSlots) : 0;
+  ? perUnit.reduce((a, p) => a + p.busy, 0) /
+    (units.length * availableWorkSlots)
+  : 0;
   const busiest = perUnit.slice().sort((a, b) => b.util - a.util)[0] || null;
   const driver = rows.slice().sort((a, b) => (a.end < b.end ? 1 : -1))[0] || null;
   return { perUnit, typeAgg, late, overall, busiest, driver };
