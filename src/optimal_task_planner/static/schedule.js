@@ -168,6 +168,22 @@ function renderSchedule() {
     wrap.innerHTML = ""; return;
   }
   const stale = sc.horizon_start && sc.horizon_start !== horizon.start_date;
+    const rows = scheduleRows();
+  const metDeadlines = rows.filter(r => r.deadline && r.met);
+  const lateDeadlines = rows.filter(r => r.deadline && !r.met);
+
+  let deadlineSummary = "";
+
+  if (metDeadlines.length) {
+    deadlineSummary +=
+      ` <span class="badge ok">DEADLINES MET: ${metDeadlines.length}</span>`;
+  }
+
+  if (lateDeadlines.length) {
+    deadlineSummary +=
+      ` <span class="badge bad">DEADLINES MISSED: ${lateDeadlines.length}</span>`;
+  }
+
   st.innerHTML = `<span class="badge ok">${esc(sc.status)}</span><span>` +
     esc(t("sch.summary", {
       makespan: fmtHours(sc.makespan_minutes || 0),
@@ -177,6 +193,7 @@ function renderSchedule() {
       at: sc.solved_at ? fmtDT(sc.solved_at) : "",
       from: sc.horizon_start ? fmtDateLong(sc.horizon_start) : "",
     }))})</span></span>` +
+    deadlineSummary +
     (stale ? ` <b class="bad">${esc(t("sch.stale"))}</b>` : "");
   wrap.innerHTML = buildGanttSVG(false);
   attachTooltips(wrap);
