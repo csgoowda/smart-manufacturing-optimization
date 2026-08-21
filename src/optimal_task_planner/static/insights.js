@@ -85,10 +85,41 @@ function renderInsights() {
     .join("");
 
   const maxU = Math.max(0.0001, ...m.perUnit.map(p => p.util));
-  const unitBars = m.perUnit.slice().sort((a, b) => b.util - a.util).map(p =>
-    bar(esc(p.unit), p.util / maxU, `${pct(p.util)}% · ${esc(t("ins.busy", { h: fmtHours(p.busy * 30) }))}`)).join("");
-  const typeBars = m.typeAgg.slice().sort((a, b) => b.util - a.util).map(x =>
-    bar(`${esc(x.type)} ×${x.count}`, x.util, `${pct(x.util)}%`)).join("");
+
+function resourceStatus(util) {
+  if (util >= 0.95) return t("ins.critical");
+  if (util >= 0.80) return t("ins.highLoad");
+  if (util >= 0.50) return t("ins.healthy");
+  return t("ins.underutilized");
+}
+
+function resourceValue(util) {
+  return `${pct(util)}% · ${resourceStatus(util)}`;
+}
+
+const unitBars = m.perUnit
+  .slice()
+  .sort((a, b) => b.util - a.util)
+  .map(p =>
+    bar(
+      esc(p.unit),
+      p.util / maxU,
+      resourceValue(p.util)
+    )
+  )
+  .join("");
+
+const typeBars = m.typeAgg
+  .slice()
+  .sort((a, b) => b.util - a.util)
+  .map(x =>
+    bar(
+      `${esc(x.type)} ×${x.count}`,
+      x.util,
+      resourceValue(x.util)
+    )
+  )
+  .join("");
 
   const maxDay = Math.max(1, ...m.perUnit.flatMap(p => p.perDay));
   let heat = `<div class="tablewrap"><table class="heat"><thead><tr><th></th>` +
@@ -114,13 +145,7 @@ function renderInsights() {
     pct: pct(top.util)
   }));
 }
-    if (m.typeAgg.length) {
-    const top = m.typeAgg.slice().sort((a, b) => b.util - a.util)[0];
-    bl.push(t("ins.recommendation", {
-      name: top.type,
-      pct: pct(top.util),
-    }));
-  }
+
   if (m.driver) bl.push(t("ins.driver", { name: m.driver.stt.task_name, at: fmtDT(m.driver.end) }));
   if (m.late.length) {
     m.late.slice(0, 6).forEach(r => bl.push(t("ins.lateBy", {
