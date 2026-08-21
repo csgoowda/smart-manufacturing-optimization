@@ -24,6 +24,7 @@
   "ins.driver": "Finishes last: {name} ({at})",
   "ins.lateBy": "{name} misses its deadline by {amount}",
   "ins.noLate": "All deadlines met.",
+  "ins.recommendation": "Recommendation: {name} is the tightest resource at {pct}%. Consider adding capacity or shifting work.",
   "ins.busy": "{h} busy",
   "save.saving": "Saving…",
   "save.saved": "Saved",

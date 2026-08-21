@@ -102,8 +102,24 @@ function renderInsights() {
 
   const bl = [];
   if (m.typeAgg.length) {
+  const top = m.typeAgg.slice().sort((a, b) => b.util - a.util)[0];
+
+  bl.push(t("ins.tightest", {
+    name: top.type,
+    pct: pct(top.util)
+  }));
+
+  bl.push(t("ins.recommendation", {
+    name: top.type,
+    pct: pct(top.util)
+  }));
+}
+    if (m.typeAgg.length) {
     const top = m.typeAgg.slice().sort((a, b) => b.util - a.util)[0];
-    bl.push(t("ins.tightest", { name: top.type, pct: pct(top.util) }));
+    bl.push(t("ins.recommendation", {
+      name: top.type,
+      pct: pct(top.util),
+    }));
   }
   if (m.driver) bl.push(t("ins.driver", { name: m.driver.stt.task_name, at: fmtDT(m.driver.end) }));
   if (m.late.length) {
