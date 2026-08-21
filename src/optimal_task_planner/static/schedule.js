@@ -132,14 +132,26 @@ function scheduleRows() {
     const task = project.tasks.find(x => x.id === stt.task_id) || null;
     const segs = stt.segments;
     const minutes = segs.reduce((a, g) => a + (g.end_slot - g.start_slot) * 30, 0);
-    let deadline = null, met = null;
-    if (task && task.deadline) {
-      deadline = new Date(`${task.deadline.date}T${task.deadline.time === "24:00" ? "23:59" : task.deadline.time}`);
-      if (task.deadline.time === "24:00") deadline = new Date(deadline.getTime() + 60000);
-      met = new Date(segs[segs.length - 1].end) <= deadline;
-    }
+    let deadline = null, met = null, deadlineMarginMinutes = null;
+
+if (task && task.deadline) {
+  deadline = new Date(
+    `${task.deadline.date}T${task.deadline.time === "24:00" ? "23:59" : task.deadline.time}`
+  );
+
+  if (task.deadline.time === "24:00") {
+    deadline = new Date(deadline.getTime() + 60000);
+  }
+
+  const finish = new Date(segs[segs.length - 1].end);
+  deadlineMarginMinutes = Math.round(
+    (deadline - finish) / 60000
+  );
+
+  met = deadlineMarginMinutes >= 0;
+}
     return {
-      stt, ti, task, minutes, deadline, met,
+      stt, ti, task, minutes, deadline, met, deadlineMarginMinutes,
       start: segs[0].start, end: segs[segs.length - 1].end,
       prio: project.tasks.findIndex(x => x.id === stt.task_id) + 1,
     };
@@ -360,9 +372,11 @@ function renderDetailsTable() {
   const rows = scheduleRows().sort((a, b) => a.start < b.start ? -1 : 1);
   rows.forEach(r => {
     const dl = r.deadline ? fmtDT(r.deadline) : "—";
-    const status = r.deadline == null ? `<span class="muted">—</span>` :
-      r.met ? `<span class="ok">✓ ${esc(t("sch.onTime"))}</span>` :
-        `<span class="bad">✗ ${esc(t("sch.late"))}</span>`;
+    const status = r.deadline == null
+  ? `<span class="muted">—</span>`
+  : r.met
+    ? `<span class="ok">✓ ${esc(t("sch.onTime"))} · ${esc(fmtHours(r.deadlineMarginMinutes))} early</span>`
+    : `<span class="bad">✕ ${esc(t("sch.late"))} · ${esc(fmtHours(Math.abs(r.deadlineMarginMinutes)))} late</span>`;
     const tr = document.createElement("tr");
     const isPinnedHere = r.task && r.task.pinned_start &&
       r.task.pinned_start.date === r.start.slice(0, 10) &&
