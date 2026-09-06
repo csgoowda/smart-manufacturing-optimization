@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#1a202c" media="(prefers-color-scheme: dark)">
-<title>Optimal Task Planner</title>
+<title>Smart Manufacturing Optimization</title>
 <script>/* set the theme before first paint to avoid a flash */
 (function () {
   var t = localStorage.getItem("optimal-task-planner.theme") ||
@@ -27,7 +27,7 @@
       <rect x="11" y="17" width="7" height="3" rx="1" fill="currentColor" stroke="none" opacity=".55"/>
     </svg>
     <div>
-      <h1>Optimal Task Planner</h1>
+      <h1>Smart Manufacturing Optimization</h1>
       <span class="sub" data-i18n="app.subtitle"></span>
     </div>
   </div>
@@ -45,13 +45,7 @@
   <button id="btnRedo" class="btn icon ghost" data-icon="redo" data-i18n-title="history.redo" disabled></button>
   <button id="btnTheme" class="btn icon ghost" data-i18n-title="theme.toggle"></button>
   <button id="btnTour" class="btn icon ghost" data-icon="help" data-i18n-title="ob.tour"></button>
-  <div class="lang-menu" id="langMenu">
-    <button id="langBtn" class="btn lang-btn" data-i18n-title="lang.label" aria-haspopup="true" aria-expanded="false">
-      <span class="flag" id="langFlag"></span>
-      <span data-icon="chevron"></span>
-    </button>
-    <div class="lang-list" id="langList" role="menu" hidden></div>
-  </div>
+
   <div class="solve-group">
     <button id="btnSolve" class="btn primary">
       <span data-icon="play"></span>
@@ -215,24 +209,24 @@
 </section>
 
 </main>
-
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <rect x="3" y="4" width="18" height="18" rx="3"/><line x1="3" y1="10" x2="21" y2="10"/>
-        <line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+           aria-hidden="true">
+        <rect x="3" y="4" width="18" height="18" rx="3"/>
+        <line x1="3" y1="10" x2="21" y2="10"/>
+        <line x1="8" y1="2" x2="8" y2="6"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
       </svg>
-      Optimal Task Planner <span id="footVersion" class="muted"></span>
+      Smart Manufacturing Optimization
+      <span id="footVersion" class="muted"></span>
     </div>
-    <span class="muted" data-i18n="footer.tagline"></span>
-    <div class="footer-links">
-      <span class="muted" data-i18n="footer.powered"></span>
-      <a href="https://github.com/Mavrikant/OptimalTaskPlanner/blob/main/LICENSE" target="_blank" rel="noopener" data-i18n="footer.license"></a>
-      <a href="https://github.com/Mavrikant/OptimalTaskPlanner" target="_blank" rel="noopener">
-        <span data-icon="github"></span>GitHub
-      </a>
-    </div>
+
+    <span class="muted">
+      Production & Resource Optimization
+    </span>
   </div>
 </footer>
 

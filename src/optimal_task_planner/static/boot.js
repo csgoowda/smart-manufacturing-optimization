@@ -2,7 +2,6 @@
 /* ================= boot ================= */
 function renderAll() {
   applyI18n();
-  renderLangMenu();
   renderProjectLabel();
   renderResources();
   renderUnitPanel();
@@ -58,7 +57,6 @@ async function load() {
 (async () => {
   await loadLocales();  // dictionaries must be in place before the first render
   applyI18n();
-  renderLangMenu();
   await load();
 })().catch(e => {
   document.querySelector("main").insertAdjacentHTML("afterbegin",

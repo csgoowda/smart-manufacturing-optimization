@@ -1,5 +1,5 @@
 {
-  "app.subtitle": "Optimal resource scheduling with CP-SAT",
+  "app.subtitle": "Production & Resource Optimization",
   "app.solve": "Solve schedule",
   "app.solving": "Solving…",
   "solver.title": "Solver settings",
@@ -195,9 +195,6 @@
   "proj.backupsEmpty": "No backups yet — they are created automatically as you work.",
   "history.undo": "Undo (Ctrl+Z)",
   "history.redo": "Redo (Ctrl+Y)",
-  "footer.tagline": "Open-source optimal resource scheduling",
-  "footer.powered": "Built with OR-Tools CP-SAT & FastAPI",
-  "footer.license": "MIT License",
   "ob.tour": "Show intro tour",
   "ob.skip": "Skip tour",
   "ob.back": "Back",

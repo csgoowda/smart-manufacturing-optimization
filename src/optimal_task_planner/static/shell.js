@@ -24,15 +24,7 @@ function showOnboarding(step) {
   $("#obPrev").hidden = obStep === 0;
   $("#obNext").hidden = obStep === OB_STEPS.length - 1;
   $("#obStart").hidden = obStep !== OB_STEPS.length - 1;
-  const langBox = $("#obLang"); langBox.innerHTML = "";
-  LANGUAGES.forEach(l => {
-    const b = document.createElement("button");
-    b.className = l.code === LANG ? "active" : "";
-    b.title = l.name;
-    b.innerHTML = `<span class="flag">${l.flag}</span>`;
-    b.onclick = () => { setLang(l.code); showOnboarding(obStep); };
-    langBox.appendChild(b);
-  });
+
   $("#onboardBack").hidden = false;
 }
 function closeOnboarding() {
@@ -140,34 +132,6 @@ document.addEventListener("keydown", e => {
   e.preventDefault();
   [project.tasks[i], project.tasks[j]] = [project.tasks[j], project.tasks[i]];
   markSave(); renderTaskList();
-});
-
-/* language dropdown: flags come from the LANGUAGES registry in i18n.js */
-function renderLangMenu() {
-  const current = LANGUAGES.find(l => l.code === LANG) || LANGUAGES[0];
-  $("#langFlag").innerHTML = current.flag;
-  const list = $("#langList"); list.innerHTML = "";
-  LANGUAGES.forEach(l => {
-    const b = document.createElement("button");
-    b.className = "lang-item"; b.setAttribute("role", "menuitem");
-    b.innerHTML = `<span class="flag">${l.flag}</span><span>${esc(l.name)}</span>` +
-      (l.code === LANG ? `<span class="check">${icon("check")}</span>` : "");
-    b.onclick = () => { closeLangList(); setLang(l.code); };
-    list.appendChild(b);
-  });
-}
-function closeLangList() {
-  $("#langList").hidden = true;
-  $("#langBtn").setAttribute("aria-expanded", "false");
-}
-$("#langBtn").onclick = e => {
-  e.stopPropagation();
-  const list = $("#langList");
-  list.hidden = !list.hidden;
-  $("#langBtn").setAttribute("aria-expanded", String(!list.hidden));
-};
-document.addEventListener("click", e => {
-  if (!e.target.closest("#langMenu")) closeLangList();
 });
 
 /* ================= project switcher ================= */
